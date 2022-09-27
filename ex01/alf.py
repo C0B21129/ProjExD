@@ -1,7 +1,6 @@
 import random
 kesu=random.randint(0,5)
 moji=["A","R","D","S","L","F"]
-hyo=[]
 def toi():
     print(moji)
     nuki=moji.pop(kesu)
