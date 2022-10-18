@@ -1,7 +1,6 @@
-from ast import Break
 import tkinter as tk
 import maze_maker as mm
-import tkinter.messagebox as tkm
+import time
 
 def key_down(event):
     global key
@@ -37,7 +36,7 @@ def main_proc():
         cx,cy=mx*100+50,my*100+50
         canv.create_text(750,450,text="Congratulation!!",font=("Ricty Diminished", 150),fill="blue")
         hora= tk.PhotoImage(file = "ex03/hora.png")
-        root.after(3000,canv.create_image(750,450,image=hora,tag="hora"))
+        time.sleep(3000,canv.create_image(750,450,image=hora,tag="hora"))
         
         root.mainloop()
 
