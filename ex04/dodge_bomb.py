@@ -2,6 +2,10 @@ import sys
 import pygame as pg
 from random import randint
 
+def check_bound(obj_rct,scr_rct):
+    if obj_rct.left< scr_rct.left or scr_rct.right < obj_rct.right: hoge
+    if obj_rct.top < scr_rct.top or scr_rct.bottom < obj_rct.bottom: fuga
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     scrn_sfc = pg.display.set_mode((1600,900))
@@ -35,8 +39,19 @@ def main():
         if key_states[pg.K_DOWN]:tori_rct.centery +=1
         if key_states[pg.K_LEFT]:tori_rct.centerx -=1
         if key_states[pg.K_RIGHT]:tori_rct.centerx +=1
-
+        yoko,tate = check_bomb(tori_rct,scr_rct)
+        if yoko == -1 :
+            if key_states[pg.K_LEFT]:
+                tori_rct.centerx +=1
+            if key_states[pg.K_RIGHT]:
+                tori_rct.centerx -=1
+        if tate == -1:
+            if key_states[pg.K_UP]:tori_rct.centery +=1
+            if key_states[pg.K_DOWN]:tori_rct.centery -=1
         scrn_sfc.blit(tori_sfc,tori_rct)
+        vx*=yoko
+        vy*=tate
+        yoko,tate = check_bomb(tori_rct,scr_rct)
 
         bomb_rct.move_ip(vx,vy)
         scrn_sfc.blit(bomb_sfc,bomb_rct)
