@@ -376,7 +376,6 @@ def main(winstyle=0):
                 shoot_sound.play()
         player.reloading = S_firing
 
-
         # Create new alien
         if alienreload:
             alienreload = alienreload - 1
