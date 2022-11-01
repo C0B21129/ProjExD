@@ -160,7 +160,7 @@ class Explosion(pg.sprite.Sprite):
         if self.life <= 0:
             self.kill()
 
-class S_Shot(pg.sprite.Sprite):
+class S_Shot(pg.sprite.Sprite):#スーパーショットクラス
     """a bullet the Player sprite fires."""
 
     speed = -5
