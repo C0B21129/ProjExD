@@ -138,7 +138,7 @@ class Stage():
 	def draw(self,screen):
 		for tile in self.tile_list:
 			#tile[1]にはrectサイズの情報が入っている。tile[0]には画像が入っている
-			pg.draw.rect(screen, (0, 0, 200), tile[1])
+			pg.draw.rect(screen, (50,60,50), tile[1])
 
 #ステージのデータ。1が足場、０は何も描画しない。好きに変更することができます
 stage_data = [
@@ -166,10 +166,10 @@ stage_data = [
 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
 [1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1],
+[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1],
 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1]
+[1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1]
 ]
 
 #ゲームクラス	
@@ -192,6 +192,8 @@ class Game():
 		#敵フラグ
 		#ドラゴンのフラグ
 		self.dragon_appear = True
+		#ゾンビのフラグ
+		self.zombie_appear = True
 
 		
 	#溝に落っこちた後の処理
@@ -224,7 +226,10 @@ class Game():
 			rect_bg = bg.get_rect()
 
 			#敵の画像設定
+			#ドラゴン
 			dragon_v = pg.image.load("dragon.png")
+			#ゾンビ
+			zombie_v = pg.image.load("zombie.png")
 
 			#剣の画像設定
 			ken = pg.image.load("seiken.png")
@@ -236,14 +241,24 @@ class Game():
 			self.draw_text(f'PlayerPoint:{PP}', 50, screen_width-170, int(screen_height * 0.9), (255, 150, 0))
 
 			#敵の描画
+			#ドラゴン描画
 			if self.dragon_appear:
 				dragon = pg.draw.rect(self.screen,(255, 250, 0),(screen_width - 175, 100, 30, 30))
 				self.screen.blit(dragon_v,(screen_width - 250, 25, 50, 50))
 				self.draw_text('1000', 50, screen_width - 180, 90, (255, 255, 255))
-			
-			#ドラゴンに振れた時の処理
+			#ゾンビ描画
+			if self.zombie_appear:
+				zombie = pg.draw.rect(self.screen,(255, 250, 0),(screen_width - 250, 300, 30, 30))
+				self.screen.blit(zombie_v,(screen_width - 500, 300, 50, 50))
+				self.draw_text('5', 50, screen_width - 180, 90, (255, 255, 255))
+
+			#mobに触れた時の処理
+			#ドラゴンの処理
 			if self.dragon_appear == False:
 				Vs(self.player,1000)
+			#ゾンビの処理
+			if self.dragon_appear == False:
+				Vs(self.player,5)
 
 			#剣の描画
 			if self.key_appear:
@@ -255,8 +270,7 @@ class Game():
 				exit = pg.draw.rect(self.screen,(30,30,30),(screen_width - 75, 25, 50, 50))
 				pg.draw.rect(self.screen,(255, 0, 0),(screen_width - 75, 25, 50, 50),4)
 				PV = 2
-				if (PP<2000):
-					PP += 1000
+				PP = 10000
 				#出口に到着した時の処理
 				if self.player.rect.colliderect(exit):
 					self.draw_text('CLEAR!', 70, screen_width / 2, int(screen_height * 0.45), (150, 150, 0))
@@ -264,12 +278,16 @@ class Game():
 			#ステージの描画
 			self.stage.draw(self.screen)
 
-			#プレイヤーと鍵の衝突判定
+			#衝突判定
+			#鍵との衝突判定
 			if self.player.rect.colliderect(key):
 				self.key_appear = False	
-
+			#ドラゴンとの衝突判定
 			if self.player.rect.colliderect(dragon):
-				self.dragon_appear = False		
+				self.dragon_appear = False
+			#ゾンビとの衝突判定
+			if self.player.rect.colliderect(zombie):
+				self.zombie_appear = False	
 				
 			#プレイヤーが溝に落っこちた時の処理
 			if self.player.dead:
@@ -279,6 +297,7 @@ class Game():
 				self.player.dead = False
 				self.key_appear = True
 				self.dragon_appear = True
+				self.zombie_appear = True
 
 			#プレイヤーのメソッド呼び出し
 			self.player.update(self.screen,self.stage.tile_list)
